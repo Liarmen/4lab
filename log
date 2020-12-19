@@ -1,0 +1,401 @@
+Microsoft Windows [Version 10.0.18363.1256]
+(c) Корпорация Майкрософт (Microsoft Corporation), 2019. Все права защищены.
+
+C:\Users\Admin\Desktop\aws4>aws configure
+AWS Access Key ID [****************YC4L]: AKIAX4YGSJ**********
+AWS Secret Access Key [****************OJl5]: g17vEsebpfoefyZugboZWWzJoT9MX1**********
+Default region name [us-east-2]:
+Default output format [json]:
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-load-balancer --name Lab4-ELB --type application --scheme internet-facing --subnets subnet-42499e29 subnet-78502434
+
+An error occurred (SubnetNotFound) when calling the CreateLoadBalancer operation: InvalidSubnetID.NotFound
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-load-balancer --name Lab4_2 --type application --scheme internet-facing --subnets subnet-02ac11d7337defcb2 subnet-03a4cea64abf71ef2
+
+An error occurred (ValidationError) when calling the CreateLoadBalancer operation: The load balancer name 'Lab4_2' can only contain characters that are alphanumeric characters and hyphens(-)
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-load-balancer --name Lab4Try2 --type application --scheme internet-facing --subnets subnet-02ac11d7337defcb2 subnet-03a4cea64abf71ef2
+{
+    "LoadBalancers": [
+        {
+            "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-2:542790273134:loadbalancer/app/Lab4Try2/705e530a73cd2285",
+            "DNSName": "Lab4Try2-2066938418.us-east-2.elb.amazonaws.com",
+            "CanonicalHostedZoneId": "Z3AADJGX6KTTL2",
+            "CreatedTime": "2020-12-18T23:27:10.360000+00:00",
+            "LoadBalancerName": "Lab4Try2",
+            "Scheme": "internet-facing",
+            "VpcId": "vpc-0209ff8265e6c791e",
+            "State": {
+                "Code": "provisioning"
+            },
+            "Type": "application",
+            "AvailabilityZones": [
+                {
+                    "ZoneName": "us-east-2b",
+                    "SubnetId": "subnet-02ac11d7337defcb2",
+                    "LoadBalancerAddresses": []
+                },
+                {
+                    "ZoneName": "us-east-2c",
+                    "SubnetId": "subnet-03a4cea64abf71ef2",
+                    "LoadBalancerAddresses": []
+                }
+            ],
+            "SecurityGroups": [
+                "sg-04d1af5889fcce8cd"
+            ],
+            "IpAddressType": "ipv4"
+        }
+    ]
+}
+
+
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>aws ec2 create-security-group --group-name Lab4Try2 --description SG
+{
+    "GroupId": "sg-026716c9b79506a64"
+}
+
+
+C:\Users\Admin\Desktop\aws4>aws ec2 authorize-security-group-ingress --group-id sg-0e9691d1298a4b787 --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+An error occurred (InvalidGroup.NotFound) when calling the AuthorizeSecurityGroupIngress operation: The security group 'sg-0e9691d1298a4b787' does not exist
+
+C:\Users\Admin\Desktop\aws4>aws ec2 authorize-security-group-ingress --group-id sg-026716c9b79506a64 --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+
+C:\Users\Admin\Desktop\aws4>aws ec2 authorize-security-group-ingress --group-id sg-026716c9b79506a64 --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 set-security-groups --load-balancer-arn arn:aws:elasticloadbalancing:us-east-2:[account-id]:loadbalancer/app/Lab4-ELB/1843a0075bdbb50c --security-groups sg-0e9691d1298a4b787
+
+An error occurred (ValidationError) when calling the SetSecurityGroups operation: 'arn:aws:elasticloadbalancing:us-east-2:[account-id]:loadbalancer/app/Lab4-ELB/1843a0075bdbb50c' must be in ARN format
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 set-security-groups --load-balancer-arn arn:aws:elasticloadbalancing:us-east-2:542790273134:loadbalancer/app/Lab4Try2/705e530a73cd2285 --security-groups sg-026716c9b79506a64
+{
+    "SecurityGroupIds": [
+        "sg-026716c9b79506a64"
+    ]
+}
+
+
+C:\Users\Admin\Desktop\aws4>aws ec2 run-instances --image-id ami-0a89646f76803f341 --count 2 --instance-type t2.micro --key-name MyNewKeypair --associate-public-ip-address --security-group-ids sg-0e9691d1298a4b787
+
+An error occurred (InvalidGroup.NotFound) when calling the RunInstances operation: The security group 'sg-0e9691d1298a4b787' does not exist in VPC 'vpc-0209ff8265e6c791e'
+
+C:\Users\Admin\Desktop\aws4>aws ec2 run-instances --image-id ami-09558250a3419e7d0 --count 2 --instance-type t2.micro --key-name Lab42try --associate-public-ip-address --security-group-ids sg-026716c9b79506a64
+{
+    "Groups": [],
+    "Instances": [
+        {
+            "AmiLaunchIndex": 1,
+            "ImageId": "ami-09558250a3419e7d0",
+            "InstanceId": "i-0d7a7d351413fbcbc",
+            "InstanceType": "t2.micro",
+            "KeyName": "Lab42try",
+            "LaunchTime": "2020-12-18T23:34:25+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-east-2b",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-18-30.us-east-2.compute.internal",
+            "PrivateIpAddress": "172.31.18.30",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-02ac11d7337defcb2",
+            "VpcId": "vpc-0209ff8265e6c791e",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "321cb0bf-a9b3-48f3-8257-89af8307c832",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2020-12-18T23:34:25+00:00",
+                        "AttachmentId": "eni-attach-03a7c67ab8e77a358",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching"
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "Lab4Try2",
+                            "GroupId": "sg-026716c9b79506a64"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "06:09:02:19:92:70",
+                    "NetworkInterfaceId": "eni-0b71d1b1cce8de5aa",
+                    "OwnerId": "542790273134",
+                    "PrivateDnsName": "ip-172-31-18-30.us-east-2.compute.internal",
+                    "PrivateIpAddress": "172.31.18.30",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-18-30.us-east-2.compute.internal",
+                            "PrivateIpAddress": "172.31.18.30"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-02ac11d7337defcb2",
+                    "VpcId": "vpc-0209ff8265e6c791e",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "Lab4Try2",
+                    "GroupId": "sg-026716c9b79506a64"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 1
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            }
+        },
+        {
+            "AmiLaunchIndex": 0,
+            "ImageId": "ami-09558250a3419e7d0",
+            "InstanceId": "i-0010cd8b04c5337f2",
+            "InstanceType": "t2.micro",
+            "KeyName": "Lab42try",
+            "LaunchTime": "2020-12-18T23:34:25+00:00",
+            "Monitoring": {
+                "State": "disabled"
+            },
+            "Placement": {
+                "AvailabilityZone": "us-east-2b",
+                "GroupName": "",
+                "Tenancy": "default"
+            },
+            "PrivateDnsName": "ip-172-31-22-54.us-east-2.compute.internal",
+            "PrivateIpAddress": "172.31.22.54",
+            "ProductCodes": [],
+            "PublicDnsName": "",
+            "State": {
+                "Code": 0,
+                "Name": "pending"
+            },
+            "StateTransitionReason": "",
+            "SubnetId": "subnet-02ac11d7337defcb2",
+            "VpcId": "vpc-0209ff8265e6c791e",
+            "Architecture": "x86_64",
+            "BlockDeviceMappings": [],
+            "ClientToken": "321cb0bf-a9b3-48f3-8257-89af8307c832",
+            "EbsOptimized": false,
+            "EnaSupport": true,
+            "Hypervisor": "xen",
+            "NetworkInterfaces": [
+                {
+                    "Attachment": {
+                        "AttachTime": "2020-12-18T23:34:25+00:00",
+                        "AttachmentId": "eni-attach-06284a74d5e406a9d",
+                        "DeleteOnTermination": true,
+                        "DeviceIndex": 0,
+                        "Status": "attaching"
+                    },
+                    "Description": "",
+                    "Groups": [
+                        {
+                            "GroupName": "Lab4Try2",
+                            "GroupId": "sg-026716c9b79506a64"
+                        }
+                    ],
+                    "Ipv6Addresses": [],
+                    "MacAddress": "06:ad:6a:67:dd:3c",
+                    "NetworkInterfaceId": "eni-00a5c94dee070e007",
+                    "OwnerId": "542790273134",
+                    "PrivateDnsName": "ip-172-31-22-54.us-east-2.compute.internal",
+                    "PrivateIpAddress": "172.31.22.54",
+                    "PrivateIpAddresses": [
+                        {
+                            "Primary": true,
+                            "PrivateDnsName": "ip-172-31-22-54.us-east-2.compute.internal",
+                            "PrivateIpAddress": "172.31.22.54"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Status": "in-use",
+                    "SubnetId": "subnet-02ac11d7337defcb2",
+                    "VpcId": "vpc-0209ff8265e6c791e",
+                    "InterfaceType": "interface"
+                }
+            ],
+            "RootDeviceName": "/dev/xvda",
+            "RootDeviceType": "ebs",
+            "SecurityGroups": [
+                {
+                    "GroupName": "Lab4Try2",
+                    "GroupId": "sg-026716c9b79506a64"
+                }
+            ],
+            "SourceDestCheck": true,
+            "StateReason": {
+                "Code": "pending",
+                "Message": "pending"
+            },
+            "VirtualizationType": "hvm",
+            "CpuOptions": {
+                "CoreCount": 1,
+                "ThreadsPerCore": 1
+            },
+            "CapacityReservationSpecification": {
+                "CapacityReservationPreference": "open"
+            },
+            "MetadataOptions": {
+                "State": "pending",
+                "HttpTokens": "optional",
+                "HttpPutResponseHopLimit": 1,
+                "HttpEndpoint": "enabled"
+            },
+            "EnclaveOptions": {
+                "Enabled": false
+            }
+        }
+    ],
+    "OwnerId": "542790273134",
+    "ReservationId": "r-08b2e2199c2cc122a"
+}
+
+
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-target-group --name Lab4-Target-Group --target-type instance --protocol HTTP --port 80 --vpc-id vpc-7b7cd310
+
+An error occurred (ValidationError) when calling the CreateTargetGroup operation: The VPC ID 'vpc-7b7cd310' is not found
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-target-group --name Lab4Try2 --target-type instance --protocol HTTP --port 80 --vpc-id vpc-0209ff8265e6c791e
+{
+    "TargetGroups": [
+        {
+            "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-2:542790273134:targetgroup/Lab4Try2/01be1d326354385d",
+            "TargetGroupName": "Lab4Try2",
+            "Protocol": "HTTP",
+            "Port": 80,
+            "VpcId": "vpc-0209ff8265e6c791e",
+            "HealthCheckProtocol": "HTTP",
+            "HealthCheckPort": "traffic-port",
+            "HealthCheckEnabled": true,
+            "HealthCheckIntervalSeconds": 30,
+            "HealthCheckTimeoutSeconds": 5,
+            "HealthyThresholdCount": 5,
+            "UnhealthyThresholdCount": 2,
+            "HealthCheckPath": "/",
+            "Matcher": {
+                "HttpCode": "200"
+            },
+            "TargetType": "instance",
+            "ProtocolVersion": "HTTP1"
+        }
+    ]
+}
+
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-2:[account-id]:targetgroup/Lab4-Target-Group/ae85907c4ffc5b65 --targets Id=i-0aaec202464609838 Id=i-055b386bf33abdec0
+
+An error occurred (ValidationError) when calling the RegisterTargets operation: 'arn:aws:elasticloadbalancing:us-east-2:[account-id]:targetgroup/Lab4-Target-Group/ae85907c4ffc5b65' must be in ARN format
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 register-targets --target-group-arn arn:aws:elasticloadbalancing:us-east-2:542790273134:targetgroup/Lab4Try2/01be1d326354385d --targets Id=i-0d7a7d351413fbcbc Id=i-0010cd8b04c5337f2
+
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-east-2:[account-id]:loadbalancer/app/Lab4-ELB/1843a0075bdbb50c --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-2:[account-id]:targetgroup/Lab4-Target-Group/ae85907c4ffc5b65
+
+Error parsing parameter '--default-actions': Expected: ',', received: ']' for input:
+Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-2:[account-id]:targetgroup/Lab4-Target-Group/ae85907c4ffc5b65
+                                                                              ^
+
+C:\Users\Admin\Desktop\aws4>aws elbv2 create-listener --load-balancer-arn arn:aws:elasticloadbalancing:us-east-2:542790273134:loadbalancer/app/Lab4Try2/705e530a73cd2285 --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-east-2:542790273134:targetgroup/Lab4Try2/01be1d326354385d
+{
+    "Listeners": [
+        {
+            "ListenerArn": "arn:aws:elasticloadbalancing:us-east-2:542790273134:listener/app/Lab4Try2/705e530a73cd2285/72844a2b445e2a24",
+            "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-east-2:542790273134:loadbalancer/app/Lab4Try2/705e530a73cd2285",
+            "Port": 80,
+            "Protocol": "HTTP",
+            "DefaultActions": [
+                {
+                    "Type": "forward",
+                    "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-2:542790273134:targetgroup/Lab4Try2/01be1d326354385d",
+                    "ForwardConfig": {
+                        "TargetGroups": [
+                            {
+                                "TargetGroupArn": "arn:aws:elasticloadbalancing:us-east-2:542790273134:targetgroup/Lab4Try2/01be1d326354385d",
+                                "Weight": 1
+                            }
+                        ],
+                        "TargetGroupStickinessConfig": {
+                            "Enabled": false
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
+
+
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
+C:\Users\Admin\Desktop\aws4>
